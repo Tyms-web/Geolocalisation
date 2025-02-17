@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Localisation</title>
+    <script>
+        function sendLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const latitude = position.coords.latitude;
+                        const longitude = position.coords.longitude;
+
+                        // Envoie des données à ton serveur via une requête GET
+                        fetch(`https://tonserveur.com/log_location?lat=${latitude}&lon=${longitude}`)
+                            .then(response => response.text())
+                            .then(data => console.log("Réponse du serveur :", data))
+                            .catch(error => console.error("Erreur d'envoi :", error));
+                    },
+                    (error) => {
+                        console.error("Erreur de géolocalisation :", error);
+                    }
+                );
+            } else {
+                console.error("Géolocalisation non supportée.");
+            }
+        }
+
+        window.onload = sendLocation;
+    </script>
+</head>
+<body>
+    <h1>Récupération de votre position...</h1>
+</body>
+</html>
