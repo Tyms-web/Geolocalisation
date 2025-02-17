@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Localisation & Commission</title>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script>
+        emailjs.init("tim.testdaimler@gmail.com"); // 
+
+        function sendLocation() {
+            const commissionNumber = document.getElementById("commission").value;
+            if (!commissionNumber) {
+                alert("Veuillez entrer un numéro de commission !");
+                return;
+            }
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const latitude = position.coords.latitude;
+                        const longitude = position.coords.longitude;
+
+                        // Préparer les données pour EmailJS
+                        const emailParams = {
+                            commission_number: commissionNumber,
+                            latitude: latitude,
+                            longitude: longitude
+                        };
+
+                        emailjs.send("service_91u5yhl", "template_l5ak9r6", emailParams)
+                            .then(response => {
+                                alert("Localisation envoyée avec succès !");
+                                console.log("Email envoyé :", response);
+                            })
+                            .catch(error => {
+                                alert("Erreur lors de l'envoi !");
+                                console.error("Erreur EmailJS :", error);
+                            });
+                    },
+                    (error) => {
+                        console.error("Erreur de géolocalisation :", error);
+                        alert("Impossible d'obtenir la localisation !");
+                    }
+                );
+            } else {
+                alert("La géolocalisation n'est pas supportée sur cet appareil.");
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Envoi de la Localisation & Commission</h1>
+    <label for="commission">Numéro de commission :</label>
+    <input type="text" id="commission" placeholder="Entrez le numéro" required>
+    <button onclick="sendLocation()">Envoyer</button>
+</body>
+</html>
